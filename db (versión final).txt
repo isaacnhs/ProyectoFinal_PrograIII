@@ -1,0 +1,86 @@
+CREATE DATABASE IF NOT EXISTS escuela;
+USE escuela;
+
+CREATE TABLE administrador (
+    id INT PRIMARY KEY,
+    login TEXT NOT NULL,
+    clave TEXT NOT NULL,
+    nombre TEXT,
+    apellidos TEXT,
+    email TEXT
+);
+
+CREATE TABLE profesor (
+    id INT PRIMARY KEY,
+    login TEXT NOT NULL,
+    clave TEXT NOT NULL,
+    nombre TEXT,
+    apellidos TEXT,
+    email TEXT,
+    especialista INT
+);
+
+CREATE TABLE nivel (
+    id INT PRIMARY KEY,
+    nivel TEXT NOT NULL,
+    curso TEXT,
+    aula TEXT
+);
+
+CREATE TABLE alumno (
+    id INT PRIMARY KEY,
+    login TEXT NOT NULL,
+    clave TEXT NOT NULL,
+    nombre TEXT,
+    apellidos TEXT,
+    nivel_id INT,
+    FOREIGN KEY (nivel_id) REFERENCES nivel(id)
+);
+
+CREATE TABLE asignatura (
+    id INT PRIMARY KEY,
+    nivel_id INT,
+    profesor_id INT,
+    nombre TEXT,
+    FOREIGN KEY (nivel_id) REFERENCES nivel(id),
+    FOREIGN KEY (profesor_id) REFERENCES profesor(id)
+);
+
+CREATE TABLE asignatura_has_alumno (
+    asignatura_id INT,
+    alumno_id INT,
+    id_nota INT,
+    PRIMARY KEY (asignatura_id, alumno_id),
+    FOREIGN KEY (asignatura_id) REFERENCES asignatura(id),
+    FOREIGN KEY (alumno_id) REFERENCES alumno(id),
+    FOREIGN KEY (id_nota) REFERENCES nota(id)
+);
+
+CREATE TABLE nota (
+    id INT PRIMARY KEY,
+    asignatura_has_alumno_asignatura_id INT,
+    asignatura_has_alumno_alumno_id INT,
+    trimestre INT,
+    nota DECIMAL(5,2),
+    FOREIGN KEY (asignatura_has_alumno_asignatura_id) REFERENCES asignatura(id),
+    FOREIGN KEY (asignatura_has_alumno_alumno_id) REFERENCES alumno(id)
+);
+
+CREATE TABLE horario (
+    id INT PRIMARY KEY,
+    asignatura_id INT,
+    dia TEXT NOT NULL,
+    hora_inicio TEXT NOT NULL,
+    hora_fin TEXT NOT NULL,
+    FOREIGN KEY (asignatura_id) REFERENCES asignatura(id)
+);
+
+CREATE TABLE falta_asistencia (
+    id INT PRIMARY KEY,
+    alumno_id INT,
+    asignatura_id INT,
+    fecha DATE,
+    justificada TEXT,
+    FOREIGN KEY (alumno_id) REFERENCES alumno(id),
+    FOREIGN KEY (asignatura_id) REFERENCES asignatura(id)
+);
